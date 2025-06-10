@@ -1,0 +1,8 @@
+Flask
+flask-cors
+osmnx
+geopandas
+networkx
+shapely
+matplotlib
+pyproj

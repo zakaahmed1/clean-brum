@@ -1,0 +1,22 @@
+/* Remove default margins/padding */
+body, html {
+  margin: 0;
+  padding: 20px;
+  height: 100%;
+  font-family: Arial, sans-serif;
+}
+
+/* Fullscreen map */
+#map {
+  height: 500px;
+  width: 100%;
+  border: 1px solid #ccc;
+  margin: 20px 0;
+  z-index: 0;
+}
+
+/* Optional: Popup style override */
+.leaflet-popup-content {
+  font-size: 14px;
+  line-height: 1.4;
+}
