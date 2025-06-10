@@ -1,6 +1,6 @@
 # Birmingham Road Map (Flask + Leaflet)
 
-An interactive web app that lets you search, visualize, and explore road data for Birmingham, UK.
+An interactive web app that lets you search, visualise, and explore road data for Birmingham, UK.
 
 ## Features
 - Leaflet map with OpenStreetMap tiles
