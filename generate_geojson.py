@@ -1,3 +1,4 @@
+import os
 import osmnx as ox
 import geopandas as gpd
 
@@ -19,6 +20,7 @@ edges["length_m"] = edges.geometry.length  # Accurate length in meters
 edges = edges.to_crs(epsg=4326)
 
 # Step 6: Save as GeoJSON
+os.makedirs("data", exist_ok=True)
 edges.to_file("data/birmingham_roads.geojson", driver="GeoJSON")
 
 print("GeoJSON saved to: data/birmingham_roads.geojson")
