@@ -2,27 +2,30 @@
 <html>
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Birmingham Roads Map</title>
 
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
-<body>
-  <h1>Welcome to the Birmingham Road Explorer</h1>
+  <body>
+    <main>
+      <h1>Welcome to the Birmingham Road Explorer</h1>
 
-  <p>Type a road name below to find and zoom to it on the map.</p>
+      <p>Type a road name below to find and zoom to it on the map.</p>
 
-  <div id="search-container">
-    <input type="text" id="search" list="road-suggestions" placeholder="Search for a road...">
-    <button onclick="searchRoad()">Go</button>
-    <datalist id="road-suggestions"></datalist>
-  </div>
+      <div id="search-container">
+        <input type="text" id="search" list="road-suggestions" placeholder="Search for a road...">
+        <button onclick="searchRoad()">Go</button>
+        <datalist id="road-suggestions"></datalist>
+      </div>
 
-  <div id="map"></div>
+      <div id="map"></div>
 
-  <p>You can use this tool to explore road lengths and locations across Birmingham. More features coming soon!</p>
+      <p>You can use this tool to explore road lengths and locations across Birmingham. More features coming soon!</p>
+    </main>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-  <script src="{{ url_for('static', filename='js/map.js') }}"></script>
-</body>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+  </body>
 </html>
