@@ -44,21 +44,27 @@ fetch('/api/roads')
             });
         });
 
-    // Prepare but don’t display yet
     roadLayer = L.geoJSON(data, {
       onEachFeature: function (feature, layer) {
-        const name = feature.properties.name;
+        const name = feature.properties.name ?? "Unnamed";
         const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
         const type = feature.properties.highway ?? "Unknown";
         const speed = feature.properties.maxspeed ?? "N/A";
-        layer.bindPopup(`<strong>${name}</strong><br>Type: ${type}<br>Length: ${length} m<br>Speed Limit: ${speed}`);
-        feature._leafletLayer = layer;
+        
+        layer.bindPopup(`
+          <strong>${name}</strong><br>
+          Type: ${type}<br>
+          Speed Limit: ${speed}<br>
+          Length: ${length} m
+        `);
       },
       style: {
-        color: "#3366cc",
-        weight: 2
+      opacity: 0,           // Make the line invisible
+      fillOpacity: 0,       // In case of polygon features (safety)
+      weight: 8,            // Still thick enough to be clickable
+      color: "#000000"      // Doesn't matter, it's invisible
       }
-    });
+    }).addTo(map);
   });
 
 // Search handler
