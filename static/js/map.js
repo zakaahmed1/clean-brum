@@ -103,6 +103,11 @@ function searchRoad() {
   const totalLength = matches.reduce((sum, f) => sum + (f.properties.length_m || 0), 0).toFixed(2);
   L.popup()
     .setLatLng(group.getBounds().getCenter())
-    .setContent(`<strong>${matches[0].properties.name}</strong><br>Total length: ${totalLength} m`)
+    .setContent(`<strong>${matches[0].properties.name ?? "Unnamed"}</strong><br>
+      Type: ${matches[0].properties.highway ?? "Unknown"}<br>
+      Speed Limit: ${matches[0].properties.maxspeed ?? "N/A"}<br>
+      Total length: ${totalLength} m
+`)
+
     .openOn(map);
 }
