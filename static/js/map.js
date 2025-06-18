@@ -49,7 +49,9 @@ fetch('/api/roads')
       onEachFeature: function (feature, layer) {
         const name = feature.properties.name;
         const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
-        layer.bindPopup(`<strong>${name}</strong><br>Length: ${length} m`);
+        const type = feature.properties.highway ?? "Unknown";
+        const speed = feature.properties.maxspeed ?? "N/A";
+        layer.bindPopup(`<strong>${name}</strong><br>Type: ${type}<br>Length: ${length} m<br>Speed Limit: ${speed}`);
         feature._leafletLayer = layer;
       },
       style: {
@@ -82,7 +84,9 @@ function searchRoad() {
     onEachFeature: function (feature, layer) {
       const name = feature.properties.name;
       const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
-      layer.bindPopup(`<strong>${name}</strong><br>Length: ${length} m`);
+      const type = feature.properties.highway ?? "Unknown";
+      const speed = feature.properties.maxspeed ?? "N/A";
+      layer.bindPopup(`<strong>${name}</strong><br>Type: ${type}<br>Length: ${length} m<br>Speed Limit: ${speed}`);
     },
     style: {
       color: "#cc0000",
