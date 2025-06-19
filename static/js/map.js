@@ -3,12 +3,36 @@ let roadFeatures = [];
 let lastSearchLayer = null;
 
 // Initialize the map
-const map = L.map('map').setView([52.4862, -1.8904], 12);
+const defaultView = [52.4862, -1.8904];
+const defaultZoom = 12;
+
+const map = L.map('map').setView(defaultView, defaultZoom);
 
 // Add tile layer
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map); // ✅ Needed!
+}).addTo(map);
+
+document.getElementById("reset-view").addEventListener("click", () => {
+  map.setView(defaultView, defaultZoom);
+
+  if (lastSearchLayer) {
+    map.removeLayer(lastSearchLayer);
+    lastSearchLayer = null;
+  }
+
+  // Reset active road highlight (optional cleanup)
+  if (window.activeRoadLayer) {
+    window.activeRoadLayer.setStyle({
+      color: window.activeRoadLayer.options.originalColor || '#000000',
+      weight: window.activeRoadLayer.options.originalWeight || 8,
+      opacity: window.activeRoadLayer.options.originalOpacity ?? 0
+    });
+    window.activeRoadLayer = null;
+  }
+
+  hideSidebar();
+});
 
 // Load road data
 fetch('/api/roads')
@@ -58,6 +82,8 @@ fetch('/api/roads')
         Length: ${length} m
       `;
 
+      let hoverTimeout;
+
       // Hover behavior
 
       layer.on('mouseover', function () {
@@ -71,16 +97,21 @@ fetch('/api/roads')
         }
 
         hoverTimeout = setTimeout(() => {
-          layer.setStyle({
-            color: '#ffff00',
-            weight: 5,
-            opacity: 1
-          });
+          if (window.activeRoadLayer !== layer) { // Only highlight if not selected
+            layer.setStyle({
+              color: '#ffff00',
+              weight: 5,
+              opacity: 1
+            });
+          }
         }, 50); // Delay slightly
       });
 
       layer.on('mouseout', function () {
         clearTimeout(hoverTimeout);
+        // Don't reset style if this is the selected road
+        if (window.activeRoadLayer === layer) return;
+
         layer.setStyle({
           color: layer.options.originalColor || '#000000',
           weight: layer.options.originalWeight || 8,
@@ -88,24 +119,33 @@ fetch('/api/roads')
         });
       });
 
-      // Click → open sidebar
+      // Click → open sidebar and highlight
       layer.on('click', function () {
+        // Reset previously clicked highlight
+        if (window.activeRoadLayer && window.activeRoadLayer !== layer) {
+          window.activeRoadLayer.setStyle({
+            color: window.activeRoadLayer.options.originalColor || '#000000',
+            weight: window.activeRoadLayer.options.originalWeight || 8,
+            opacity: window.activeRoadLayer.options.originalOpacity ?? 0
+          });
+        }
+
+        // Highlight this road
+        layer.setStyle({
+          color: '#00ffff',
+          weight: 6,
+          opacity: 1
+        });
+
+        window.activeRoadLayer = layer;
+
+        // Sidebar content
         showSidebar({ name, type, speed, length });
       });
     }
 
     roadLayer = L.geoJSON(data, {
-      onEachFeature: function (feature, layer) {
-        // Only clickable, no hover
-        const name = feature.properties.name ?? "Unnamed";
-        const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
-        const type = feature.properties.highway ?? "Unknown";
-        const speed = feature.properties.maxspeed ?? "N/A";
-
-        layer.on('click', function () {
-          showSidebar({ name, type, speed, length });
-        });
-      },
+      onEachFeature: attachRoadEvents,
       style: {
         opacity: 0,
         fillOpacity: 0,
