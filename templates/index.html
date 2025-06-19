@@ -14,6 +14,15 @@
 
       <p>Type a road name below to find and zoom to it on the map.</p>
 
+      <div class="theme-toggle-wrapper">
+        <label class="theme-switch">
+          <input type="checkbox" id="theme-toggle" />
+          <span class="slider">
+            <span id="mode-label">Light Mode</span>
+          </span>
+        </label>
+      </div>
+
       <div id="search-container">
         <input type="text" id="search" list="road-suggestions" placeholder="Search for a road...">
         <button onclick="searchRoad()">Go</button>

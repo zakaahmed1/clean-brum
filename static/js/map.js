@@ -225,3 +225,25 @@ function showSidebar(data) {
 function hideSidebar() {
   document.getElementById("sidebar").classList.add("hidden");
 }
+
+const toggleInput = document.getElementById('theme-toggle');
+const slider = document.querySelector('.slider');
+
+function updateThemeText(isDark) {
+  document.getElementById('mode-label').textContent = isDark ? "Dark Mode" : "Light Mode";
+}
+
+toggleInput.addEventListener('change', () => {
+  const isDark = toggleInput.checked;
+  document.body.classList.toggle('dark-mode', isDark);
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
+  updateThemeText(isDark);
+});
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('theme');
+  const isDark = saved === 'dark';
+  document.body.classList.toggle('dark-mode', isDark);
+  toggleInput.checked = isDark;
+  updateThemeText(isDark);
+});
