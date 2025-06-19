@@ -44,25 +44,73 @@ fetch('/api/roads')
             });
         });
 
+    // Helper function to avoid copy and pasting - use this for roadLayer and lastSearchLayer so we don't have to declare features every time
+    function attachRoadEvents(feature, layer) {
+      const name = feature.properties.name ?? "Unnamed";
+      const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
+      const type = feature.properties.highway ?? "Unknown";
+      const speed = feature.properties.maxspeed ?? "N/A";
+
+      const tooltipContent = `
+        <strong>${name}</strong><br>
+        Type: ${type}<br>
+        Speed Limit: ${speed}<br>
+        Length: ${length} m
+      `;
+
+      // Hover behavior
+
+      layer.on('mouseover', function () {
+        if (map.getZoom() > 14) {
+          layer.bindTooltip(tooltipContent, {
+            sticky: true,       // tooltip follows the mouse
+            direction: 'top',   // position above the road
+            opacity: 0.9,
+            className: 'road-tooltip' // optional custom styling
+          }).openTooltip();
+        }
+
+        hoverTimeout = setTimeout(() => {
+          layer.setStyle({
+            color: '#ffff00',
+            weight: 5,
+            opacity: 1
+          });
+        }, 50); // Delay slightly
+      });
+
+      layer.on('mouseout', function () {
+        clearTimeout(hoverTimeout);
+        layer.setStyle({
+          color: layer.options.originalColor || '#000000',
+          weight: layer.options.originalWeight || 8,
+          opacity: layer.options.originalOpacity ?? 0
+        });
+      });
+
+      // Click → open sidebar
+      layer.on('click', function () {
+        showSidebar({ name, type, speed, length });
+      });
+    }
+
     roadLayer = L.geoJSON(data, {
       onEachFeature: function (feature, layer) {
+        // Only clickable, no hover
         const name = feature.properties.name ?? "Unnamed";
         const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
         const type = feature.properties.highway ?? "Unknown";
         const speed = feature.properties.maxspeed ?? "N/A";
-        
-        layer.bindPopup(`
-          <strong>${name}</strong><br>
-          Type: ${type}<br>
-          Speed Limit: ${speed}<br>
-          Length: ${length} m
-        `);
+
+        layer.on('click', function () {
+          showSidebar({ name, type, speed, length });
+        });
       },
       style: {
-      opacity: 0,           // Make the line invisible
-      fillOpacity: 0,       // In case of polygon features (safety)
-      weight: 8,            // Still thick enough to be clickable
-      color: "#000000"      // Doesn't matter, it's invisible
+        opacity: 0,
+        fillOpacity: 0,
+        weight: 8,
+        color: "#000000"
       }
     }).addTo(map);
   });
@@ -70,15 +118,24 @@ fetch('/api/roads')
 // Search handler
 function searchRoad() {
   const input = document.getElementById("search").value.trim().toLowerCase();
-  if (!input) return;
+  if (!input) {
+    hideSidebar(); // Hide sidebar if search is cleared
+    if (lastSearchLayer) {
+      map.removeLayer(lastSearchLayer);
+      lastSearchLayer = null;
+    }
+    return;
+  }
 
+  // Remove previous search highlight
   if (lastSearchLayer) {
     map.removeLayer(lastSearchLayer);
+    lastSearchLayer = null;
   }
 
   const matches = roadFeatures.filter(f =>
     typeof f.properties.name === 'string' &&
-    f.properties.name.toLowerCase().includes(input)
+    f.properties.name.toLowerCase().startsWith(input)
   );
 
   if (matches.length === 0) {
@@ -88,11 +145,10 @@ function searchRoad() {
 
   lastSearchLayer = L.geoJSON(matches, {
     onEachFeature: function (feature, layer) {
-      const name = feature.properties.name;
-      const length = feature.properties.length_m?.toFixed(2) ?? "N/A";
-      const type = feature.properties.highway ?? "Unknown";
-      const speed = feature.properties.maxspeed ?? "N/A";
-      layer.bindPopup(`<strong>${name}</strong><br>Type: ${type}<br>Length: ${length} m<br>Speed Limit: ${speed}`);
+      layer.options.originalColor = "#cc0000";
+      layer.options.originalWeight = 3;
+      layer.options.originalOpacity = 1;
+      attachRoadEvents(feature, layer);
     },
     style: {
       color: "#cc0000",
@@ -116,4 +172,16 @@ function searchRoad() {
 `)
 
     .openOn(map);
+}
+
+function showSidebar(data) {
+  document.getElementById("road-name").innerText = data.name;
+  document.getElementById("road-type").innerText = data.type;
+  document.getElementById("road-speed").innerText = data.speed;
+  document.getElementById("road-length").innerText = data.length;
+  document.getElementById("sidebar").classList.remove("hidden");
+}
+
+function hideSidebar() {
+  document.getElementById("sidebar").classList.add("hidden");
 }
