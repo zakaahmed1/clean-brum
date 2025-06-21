@@ -227,23 +227,27 @@ function hideSidebar() {
 }
 
 const toggleInput = document.getElementById('theme-toggle');
+const modeLabel = document.getElementById('mode-label');
 const slider = document.querySelector('.slider');
 
-function updateThemeText(isDark) {
-  document.getElementById('mode-label').textContent = isDark ? "Dark Mode" : "Light Mode";
+function updateThemeUI(isDark) {
+  // Update body class
+  document.body.classList.toggle('dark-mode', isDark);
+
+  // Update label text
+  modeLabel.innerHTML = isDark ? "DARK<br>MODE" : "LIGHT<br>MODE";
+
+  // Save theme preference
+  localStorage.setItem('theme', isDark ? 'dark' : 'light');
 }
 
 toggleInput.addEventListener('change', () => {
-  const isDark = toggleInput.checked;
-  document.body.classList.toggle('dark-mode', isDark);
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  updateThemeText(isDark);
+  updateThemeUI(toggleInput.checked);
 });
 
 window.addEventListener('DOMContentLoaded', () => {
-  const saved = localStorage.getItem('theme');
-  const isDark = saved === 'dark';
-  document.body.classList.toggle('dark-mode', isDark);
+  const savedTheme = localStorage.getItem('theme');
+  const isDark = savedTheme === 'dark';
   toggleInput.checked = isDark;
-  updateThemeText(isDark);
+  updateThemeUI(isDark);
 });

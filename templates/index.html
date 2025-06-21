@@ -1,49 +1,49 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Birmingham Roads Map</title>
-
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
 </head>
-  <body>
-    <main>
-      <h1>Welcome to the Birmingham Road Explorer</h1>
+<body>
+  <main>
+    <h1>Welcome to the Birmingham Road Explorer</h1>
+    <p>Type a road name below to find and zoom to it on the map.</p>
 
-      <p>Type a road name below to find and zoom to it on the map.</p>
+    <!-- Toggle Switch -->
+    <div class="theme-toggle-wrapper">
+      <label class="theme-switch">
+        <input type="checkbox" id="theme-toggle" />
+        <span class="slider">
+          <span id="mode-label">LIGHT<br>MODE</span>
+        </span>
+      </label>
+    </div>
 
-      <div class="theme-toggle-wrapper">
-        <label class="theme-switch">
-          <input type="checkbox" id="theme-toggle" />
-          <span class="slider">
-            <span id="mode-label">Light Mode</span>
-          </span>
-        </label>
-      </div>
+    <!-- Search and Map UI -->
+    <div id="search-container">
+      <input type="text" id="search" list="road-suggestions" placeholder="Search for a road..." />
+      <button onclick="searchRoad()">Go</button>
+      <datalist id="road-suggestions"></datalist>
+    </div>
 
-      <div id="search-container">
-        <input type="text" id="search" list="road-suggestions" placeholder="Search for a road...">
-        <button onclick="searchRoad()">Go</button>
-        <datalist id="road-suggestions"></datalist>
-      </div>
+    <div id="sidebar" class="hidden">
+      <h2 id="road-name">Road Name</h2>
+      <p><strong>Type:</strong> <span id="road-type"></span></p>
+      <p><strong>Speed Limit:</strong> <span id="road-speed"></span></p>
+      <p><strong>Length:</strong> <span id="road-length"></span> m</p>
+      <button onclick="hideSidebar()">Close</button>
+    </div>
 
-      <div id="sidebar" class="hidden">
-        <h2 id="road-name">Road Name</h2>
-        <p><strong>Type:</strong> <span id="road-type"></span></p>
-        <p><strong>Speed Limit:</strong> <span id="road-speed"></span></p>
-        <p><strong>Length:</strong> <span id="road-length"></span> m</p>
-        <button onclick="hideSidebar()">Close</button>
-      </div>
+    <button id="reset-view" class="map-button">Reset View</button>
+    <div id="map"></div>
 
-      <button id="reset-view" class="map-button">Reset View</button>
-      <div id="map"></div>
+    <p>You can use this tool to explore road lengths and locations across Birmingham. More features coming soon!</p>
+  </main>
 
-      <p>You can use this tool to explore road lengths and locations across Birmingham. More features coming soon!</p>
-    </main>
-
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="{{ url_for('static', filename='js/map.js') }}"></script>
-  </body>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{{ url_for('static', filename='js/map.js') }}"></script>
+</body>
 </html>

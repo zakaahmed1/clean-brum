@@ -206,6 +206,7 @@ body.dark-mode .leaflet-control.custom-reset:hover {
   background-color: #333;
 }
 
+/* ========== Theme Toggle ========== */
 .theme-toggle-wrapper {
   margin: 20px 0;
 }
@@ -213,7 +214,7 @@ body.dark-mode .leaflet-control.custom-reset:hover {
 .theme-switch {
   position: relative;
   display: inline-block;
-  width: 140px;
+  width: 110px;
   height: 50px;
   font-family: Arial, sans-serif;
 }
@@ -235,7 +236,7 @@ body.dark-mode .leaflet-control.custom-reset:hover {
   transition: background-color 0.4s;
   display: flex;
   align-items: center;
-  justify-content: flex-end; /* 👈 start with label on right */
+  justify-content: flex-end;
   padding: 0 14px;
   font-size: 14px;
   font-weight: 600;
@@ -266,11 +267,24 @@ body.dark-mode .leaflet-control.custom-reset:hover {
 .theme-switch input:checked + .slider {
   background-color: #333;
   color: #fff;
-  justify-content: flex-start; /* 👈 move label to left */
+  justify-content: flex-start;
 }
 
 .theme-switch input:checked + .slider::before {
-  transform: translateX(90px);
+  transform: translateX(60px);
   background-color: #000;
   content: "🌙";
+}
+
+.theme-switch input:focus + .slider {
+  outline: 2px solid #007bff;
+  outline-offset: 4px;
+}
+
+/* Label Text Styling (2 lines) */
+#mode-label {
+  white-space: pre-line;
+  line-height: 1.1;
+  font-size: 11px;
+  width: 40px;
 }
