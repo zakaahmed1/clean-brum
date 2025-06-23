@@ -5,7 +5,7 @@ An interactive web app that lets you search, visualise, and explore road data fo
 ## Features
 - Leaflet map with OpenStreetMap tiles
 - Search bar with auto-suggestions
-- Clickable roads showing name, roas type, speed limit, and road length
+- Clickable roads showing name, road type, speed limit, and road length
 - Flask backend serving GeoJSON API
 
 ## Getting Started
