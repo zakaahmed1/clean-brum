@@ -14,7 +14,7 @@ An interactive web app that lets you search, visualise, and explore road data fo
 pip install -r requirements.txt
 pip install -r requirements-dev.txt  # for running tests
 python generate_geojson.py
-python app.py
+python -m brumapp.app
 ```
 
 The `generate_geojson.py` script downloads road data from OpenStreetMap and may require a stable
