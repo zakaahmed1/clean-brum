@@ -2,6 +2,32 @@ let roadLayer;
 let roadFeatures = [];
 let lastSearchLayer = null;
 
+function levenshtein(a, b) {
+  const matrix = Array.from({ length: a.length + 1 }, () => new Array(b.length + 1).fill(0));
+  for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
+  for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= a.length; i++) {
+    for (let j = 1; j <= b.length; j++) {
+      const cost = a[i - 1] === b[j - 1] ? 0 : 1;
+      matrix[i][j] = Math.min(
+        matrix[i - 1][j] + 1,
+        matrix[i][j - 1] + 1,
+        matrix[i - 1][j - 1] + cost
+      );
+    }
+  }
+  return matrix[a.length][b.length];
+}
+
+function fuzzyMatch(input, name) {
+  if (!name) return false;
+  const li = input.toLowerCase();
+  const ln = name.toLowerCase();
+  if (ln.startsWith(li) || ln.includes(li)) return true;
+  const firstWord = ln.split(/\s+/)[0];
+  return levenshtein(li, firstWord) <= 2;
+}
+
 const defaultView = [52.4862, -1.8904];
 const defaultZoom = 12;
 
@@ -101,7 +127,7 @@ fetch('/api/roads')
     input.addEventListener("input", function () {
       const value = this.value.toLowerCase();
       datalist.innerHTML = "";
-      roadNames.filter(name => name.toLowerCase().startsWith(value)).slice(0, 15).forEach(name => {
+      roadNames.filter(name => fuzzyMatch(value, name)).slice(0, 15).forEach(name => {
         const option = document.createElement("option");
         option.value = name;
         datalist.appendChild(option);
@@ -132,7 +158,7 @@ function searchRoad() {
 
   const matches = roadFeatures.filter(f =>
     typeof f.properties.name === 'string' &&
-    f.properties.name.toLowerCase().startsWith(input)
+    fuzzyMatch(input, f.properties.name)
   );
 
   if (matches.length === 0) {
