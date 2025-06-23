@@ -5,3 +5,4 @@ __pycache__/
 *.geojson
 data/
 cache/
+echo .coverage >> .gitignore
