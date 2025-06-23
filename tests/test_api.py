@@ -11,6 +11,7 @@ def client(tmp_path, monkeypatch):
     data_dir.mkdir()
     sample = data_dir / "birmingham_roads.geojson"
     sample.write_text('{"type": "FeatureCollection", "features": []}')
+    monkeypatch.setattr(app, "DATA_PATH", str(sample))
     monkeypatch.chdir(tmp_path)
     app.config["TESTING"] = True
     with app.test_client() as client:
