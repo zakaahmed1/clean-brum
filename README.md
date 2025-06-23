@@ -17,6 +17,9 @@ python generate_geojson.py
 python app.py
 ```
 
+The `generate_geojson.py` script downloads road data from OpenStreetMap and may require a stable
+internet connection. The output file will be saved as `data/birmingham_roads.geojson`.
+
 Then go to http://127.0.0.1:5000
 
 ## Testing
