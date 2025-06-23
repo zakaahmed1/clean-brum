@@ -1,6 +1,8 @@
 import json
 import os
 import pytest
+import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from app import app
 
 @pytest.fixture
@@ -19,3 +21,8 @@ def test_get_roads(client):
     assert response.status_code == 200
     data = json.loads(response.data)
     assert "type" in data
+
+def test_home_route(client):
+    response = client.get("/")
+    assert response.status_code == 200
+    assert b"<html" in response.data  # or some other check for the HTML
