@@ -12,8 +12,17 @@ An interactive web app that lets you search, visualise, and explore road data fo
 
 ```bash
 pip install -r requirements.txt
+pip install -r requirements-dev.txt  # for running tests
 python generate_geojson.py
 python app.py
 ```
 
 Then go to http://127.0.0.1:5000
+
+## Testing
+
+Run the unit tests with `pytest`:
+
+```bash
+pytest
+```
