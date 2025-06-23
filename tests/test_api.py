@@ -27,3 +27,17 @@ def test_home_route(client):
     response = client.get("/")
     assert response.status_code == 200
     assert b"<html" in response.data  # or some other check for the HTML
+
+
+def test_get_roads_not_found(tmp_path, monkeypatch):
+    """Ensure a 404 response is returned when the GeoJSON file is missing."""
+    data_dir = tmp_path / "data"
+    data_dir.mkdir()
+    missing = data_dir / "missing.geojson"
+    monkeypatch.setattr(app, "DATA_PATH", str(missing))
+    monkeypatch.chdir(tmp_path)
+    app.config["TESTING"] = True
+    with app.test_client() as client:
+        response = client.get("/api/roads")
+        assert response.status_code == 404
+        assert b"Road data not found" in response.data
