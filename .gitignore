@@ -1,9 +1,29 @@
+# Byte-compiled files
 __pycache__/
 *.pyc
-.env
+*.pyo
+*.pyd
+
+# Virtual environments
+.env/
+venv/
+.venv/
+
+# Databases and data files
 *.sqlite3
 *.geojson
 data/
 cache/
-echo .coverage >> .gitignore
+
+# Test & coverage output
+.coverage
 htmlcov/
+.pytest_cache/
+
+# Editors/IDEs
+.vscode/
+.idea/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
